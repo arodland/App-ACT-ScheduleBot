@@ -5,13 +5,6 @@ with 'App::ACT::ScheduleBot::PublisherRole';
 
 use Net::Twitter;
 
-has bot => (
-  isa => 'App::ACT::ScheduleBot',
-  is => 'ro',
-  required => 1,
-  handles => [ qw/config/ ],
-);
-
 has 'net_twitter' => (
   is => 'ro',
   isa => 'Net::Twitter',
@@ -29,7 +22,7 @@ sub _build_net_twitter {
   );
 }
 
-sub startup { }
+sub _start { }
 
 sub publish_event {
   my ($self, $kernel, $event) = @_[OBJECT, KERNEL, ARG0];

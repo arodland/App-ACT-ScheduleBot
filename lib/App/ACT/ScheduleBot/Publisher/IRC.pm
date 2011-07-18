@@ -4,13 +4,6 @@ with 'App::ACT::ScheduleBot::PublisherRole';
 
 use POE qw/Component::IRC/;
 
-has bot => (
-  isa => 'App::ACT::ScheduleBot',
-  is => 'ro',
-  required => 1,
-  handles => [ qw/config/ ],
-);
-
 has 'poco_irc' => (
   is => 'ro',
   lazy => 1,
@@ -26,7 +19,7 @@ sub _build_poco_irc {
   );
 }
 
-sub startup { }
+sub _start { }
 
 sub publish_event {
   my ($self, $kernel, $event) = @_[OBJECT, KERNEL, ARG0];
