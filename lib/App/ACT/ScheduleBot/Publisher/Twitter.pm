@@ -1,7 +1,8 @@
-package App::ACT::ScheduleBot::Tweeter;
+package App::ACT::ScheduleBot::Publisher::Twitter;
 use Moose;
 
-use POE;
+with 'App::ACT::ScheduleBot::PublisherRole';
+
 use Net::Twitter;
 
 has bot => (
@@ -28,20 +29,7 @@ sub _build_net_twitter {
   );
 }
 
-has 'session' => (
-  is => 'ro',
-  isa => 'POE::Session',
-  builder => '_build_session',
-);
-
-sub _build_session {
-  my ($self) = @_;
-  return POE::Session->create(
-    object_states => [
-      $self => [ qw/startup publish_event/ ],
-    ]
-  );
-}
+sub startup { }
 
 sub publish_event {
   my ($self, $kernel, $event) = @_[OBJECT, KERNEL, ARG0];

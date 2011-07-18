@@ -1,5 +1,6 @@
-package App::ACT::ScheduleBot::IRCer;
+package App::ACT::ScheduleBot::Publisher::IRC;
 use Moose;
+with 'App::ACT::ScheduleBot::PublisherRole';
 
 use POE qw/Component::IRC/;
 
@@ -22,21 +23,6 @@ sub _build_poco_irc {
     ircname => $self->config->{IRC}{IRCName},
     server => $self->config->{IRC}{Server},
     alias => 'irc',
-  );
-}
-
-has 'session' => (
-  is => 'ro',
-  isa => 'POE::Session',
-  builder => '_build_session',
-);
-
-sub _build_session {
-  my ($self) = @_;
-  return POE::Session->create(
-    object_states => [
-      $self => [ qw/startup publish_event/ ],
-    ]
   );
 }
 
