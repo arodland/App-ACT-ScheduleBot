@@ -23,7 +23,7 @@ sub all_poe_states {
   my @ret;
   
   for my $method (reverse Class::MOP::class_of($self)->find_all_methods_by_name('poe_states')) {
-    push @ret, $method->execute($self);
+    push @ret, $method->{code}->execute($self);
   }
 
   return @ret;
@@ -34,7 +34,7 @@ sub all_poe_session_args {
   my @ret;
 
   for my $method (reverse Class::MOP::class_of($self)->find_all_methods_by_name('poe_session_args')) {
-    push @ret, $method->execute($self);
+    push @ret, $method->{code}->execute($self);
   }
 
   return @ret;

@@ -1,11 +1,9 @@
 package App::ACT::ScheduleBot;
 
 use Moose;
-use DateTime;
-use DateTime::Format::ISO8601;
-use Data::iCal;
-use LWP::Simple 'get';
-use Net::Twitter;
+use Config::Any;
+
+use App::ACT::ScheduleBot::ScheduleFetcher;
 
 has 'config_file' => (
   is => 'ro',
@@ -16,11 +14,20 @@ has 'config_file' => (
 has 'config' => (
   is => 'ro',
   isa => 'HashRef',
+  lazy => 1,
   builder => 'load_config',
 );
 
 sub load_config {
-  return Config::Any->load_files( { files => [ $self->config_file ] } );
+  my ($self) = @_;
+  my $configs = Config::Any->load_files(
+    {
+      files => [ $self->config_file ],
+      use_ext => 1,
+    }
+  );
+  return (values $configs->[0])[0];
+
 }
 
 has '_publishers' => (
@@ -33,6 +40,20 @@ has '_publishers' => (
     add_publisher => 'push',
   },
 );
+
+has 'schedule_fetcher' => (
+  is => 'ro',
+  isa => 'App::ACT::ScheduleBot::ScheduleFetcher',
+  lazy => 1,
+  default => sub { 
+    my ($self) = @_;
+    App::ACT::ScheduleBot::ScheduleFetcher->new(
+      bot => $self
+    );
+  },
+);
+
+
 
 no Moose;
 __PACKAGE__->meta->make_immutable;

@@ -2,18 +2,21 @@ package App::ACT::ScheduleBot::ScheduleFetcher;
 use Moose;
 use LWP::Simple;
 use Data::ICal;
+use Data::ICal::DateTime;
+use App::ACT::ScheduleBot::Event;
+use POE;
 
 with 'App::ACT::ScheduleBot::POERole';
 
 sub poe_states {
-  qw/refresh announce/
+  qw/_start refresh announce/
 }
 
 has '_alarms' => (
   is => 'ro',
   isa => 'ArrayRef',
   default => sub { [] },
-  trait => ['Array'],
+  traits => ['Array'],
   handles => {
     alarms => 'elements',
     add_alarm => 'push',
@@ -61,9 +64,9 @@ sub get_schedule {
   my $ics_data = get($ics_url);
 
   my $parser = Data::ICal->new(data => $ics_data);
-  my $entries = @{ $parser->entries };
+  my @entries = @{ $parser->entries };
 
-  return map App::ACT::ScheduleBot::Event->new(ics_entry => $_) @$entries;
+  return map App::ACT::ScheduleBot::Event->new(ics_entry => $_), @entries;
 }
 
 no Moose;
