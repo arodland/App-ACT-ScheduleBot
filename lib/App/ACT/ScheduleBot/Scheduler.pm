@@ -1,4 +1,4 @@
-package App::ACT::ScheduleBot::ScheduleFetcher;
+package App::ACT::ScheduleBot::Scheduler;
 use Moose;
 use LWP::Simple;
 use Data::ICal;
@@ -9,7 +9,7 @@ use POE;
 with 'App::ACT::ScheduleBot::POERole';
 
 sub poe_states {
-  qw/_start refresh announce/
+  qw/_start refresh schedule_events announce/
 }
 
 has '_alarms' => (
@@ -36,9 +36,15 @@ sub _start {
 }
 
 sub refresh {
-  my ($self, $kernel) = @_[OBJECT, KERNEL];
+  my ($self, $kernel, $session) = @_[OBJECT, KERNEL, SESSION];
 
-  my $schedule = $self->get_schedule;
+  $self->bot->schedule->get_schedule(
+    postback => $session->postback("schedule_events")
+  );
+}
+
+sub schedule_events {
+  my ($self, $kernel, $schedule) = @_[OBJECT, KERNEL, ARG0];
 
   for my $alarm ($self->alarms) {
     $kernel->alarm_remove($alarm);
@@ -66,7 +72,10 @@ sub get_schedule {
   my $parser = Data::ICal->new(data => $ics_data);
   my @entries = @{ $parser->entries };
 
-  return map App::ACT::ScheduleBot::Event->new(ics_entry => $_), @entries;
+  return
+    map App::ACT::ScheduleBot::Event->new(ics_entry => $_), 
+    grep $_->isa('Data::ICal::Entry::Event'), 
+    @entries;
 }
 
 no Moose;
