@@ -83,11 +83,47 @@ has 'scheduler' => (
   },
 );
 
+sub BUILD {
+  my ($self) = @_;
+
+  if ($self->config->{Twitter}{Enabled}) {
+    Class::MOP::load_class('App::ACT::ScheduleBot::Publisher::Twitter');
+    $self->add_publisher(App::ACT::ScheduleBot::Publisher::Twitter->new(bot => $self));
+  }
+
+  if ($self->config->{IRC}{Enabled}) {
+    Class::MOP::load_class('App::ACT::ScheduleBot::Publisher::IRC');
+    $self->add_publisher(App::ACT::ScheduleBot::Publisher::IRC->new(bot => $self));
+  }
+}
+
 sub get_schedule_and_exit {
   my ($self) = @_;
+  $_->debug_mode(1) for $self->publishers;
   my $schedule = $self->schedule->get_schedule;
   POE::Kernel->run;
   return $schedule;
+}
+
+sub test_run {
+  my ($self) = @_;
+  $self->scheduler->debug_mode(1);
+  $_->debug_mode(1) for $self->publishers;
+  POE::Kernel->run;
+}
+
+sub run {
+  my ($self) = @_;
+  $self->scheduler;
+  POE::Kernel->run;
+}
+
+sub announce_event {
+  my ($self, $event) = @_;
+
+  for my $publisher ($self->publishers) {
+    $publisher->announce_event($event);
+  }
 }
 
 no Moose;

@@ -1,8 +1,7 @@
 package App::ACT::ScheduleBot::Publisher::IRC;
 use Moose;
-with 'App::ACT::ScheduleBot::PublisherRole';
-
 use POE qw/Component::IRC/;
+with 'App::ACT::ScheduleBot::PublisherRole';
 
 has 'poco_irc' => (
   is => 'ro',
@@ -11,6 +10,7 @@ has 'poco_irc' => (
 );
 
 sub _build_poco_irc {
+  my ($self) = @_;
   return POE::Component::IRC->spawn(
     nick => $self->config->{IRC}{Nickname},
     ircname => $self->config->{IRC}{IRCName},
@@ -19,9 +19,15 @@ sub _build_poco_irc {
   );
 }
 
+has 'debug_mode' => ( 
+  is => 'rw',
+  isa => 'Int',
+  default => 0
+);
+
 sub _start { }
 
-sub publish_event {
+sub announce_event {
   my ($self, $kernel, $event) = @_[OBJECT, KERNEL, ARG0];
   die "Unimplemented";
 }

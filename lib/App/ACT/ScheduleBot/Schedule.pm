@@ -2,6 +2,10 @@ package App::ACT::ScheduleBot::Schedule;
 use Moose;
 use LWP::Simple;
 
+use Data::ICal;
+use Data::ICal::DateTime;
+use App::ACT::ScheduleBot::Event;
+
 with 'App::ACT::ScheduleBot::POERole';
 
 sub poe_states {

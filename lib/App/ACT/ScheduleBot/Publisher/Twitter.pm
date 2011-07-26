@@ -1,9 +1,8 @@
 package App::ACT::ScheduleBot::Publisher::Twitter;
 use Moose;
-
-with 'App::ACT::ScheduleBot::PublisherRole';
-
+use POE;
 use Net::Twitter;
+with 'App::ACT::ScheduleBot::PublisherRole';
 
 has 'net_twitter' => (
   is => 'ro',
@@ -13,6 +12,7 @@ has 'net_twitter' => (
 );
 
 sub _build_net_twitter {
+  my ($self) = @_;
   return Net::Twitter->new(
     traits => [ qw/OAuth API::REST RetryOnError/ ],
     consumer_key => $self->config->{Twitter}{'Consumer Key'},
@@ -22,9 +22,15 @@ sub _build_net_twitter {
   );
 }
 
+has 'debug_mode' => ( 
+  is => 'rw',
+  isa => 'Int',
+  default => 0
+);
+
 sub _start { }
 
-sub publish_event {
+sub announce_event {
   my ($self, $kernel, $event) = @_[OBJECT, KERNEL, ARG0];
   die "Unimplemented";
 }
