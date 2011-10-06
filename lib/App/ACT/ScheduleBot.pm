@@ -3,6 +3,10 @@ package App::ACT::ScheduleBot;
 use Moose;
 use Config::Any;
 
+#sub POE::Kernel::TRACE_EVENTS () { 1 }
+#sub POE::Kernel::TRACE_SESSIONS () { 1 }
+#sub POE::Kernel::TRACE_REFCNT () { 1 }
+
 use POE;
 use App::ACT::ScheduleBot::Schedule;
 use App::ACT::ScheduleBot::Scheduler;
