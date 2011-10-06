@@ -20,7 +20,7 @@ for my $prop (qw/start end/) {
 for my $prop (qw/organizer location url summary tzid/) {
   has $prop => (
     is => 'ro',
-    isa => 'Str',
+    isa => 'Maybe[Str]',
     lazy => 1,
     default => sub { shift->build_strval($prop) },
   );
@@ -47,8 +47,8 @@ sub get_prop_value {
 sub build_datetime {
   my ($self, $propname) = @_;
 
-  my $prop = $self->get_property($propname);
-  my $dt = $prop->value;
+  my $prop = $self->get_property("dt$propname");
+  my $dt = DateTime::Format::ISO8601->parse_datetime($prop->value);
   my $time_zone = $prop->parameters->{TZID};
 
   if (defined $time_zone) {
@@ -56,6 +56,13 @@ sub build_datetime {
   }
   return $dt;
 }
+
+sub build_strval {
+  my ($self, $propname) = @_;
+
+  return $self->get_prop_value($propname);
+}
+
 
 no Moose;
 __PACKAGE__->meta->make_immutable;
