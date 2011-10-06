@@ -58,7 +58,8 @@ sub schedule_events {
     if ($self->debug_mode) {
       $kernel->yield(announce => $event);
     } else {
-      my $announce_time = $event->start_time - $self->config->{General}{'Announcement Lead Time'};
+      my $start_time = $event->start->epoch;
+      my $announce_time = $start_time - $self->config->{General}{'Announcement Lead Time'};
       next if $self->last_announcement > $announce_time;
       my $alarm = $kernel->alarm_set( announce => $announce_time, $event );
     }
