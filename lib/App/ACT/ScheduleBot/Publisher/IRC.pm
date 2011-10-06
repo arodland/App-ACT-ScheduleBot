@@ -1,6 +1,8 @@
 package App::ACT::ScheduleBot::Publisher::IRC;
 use Moose;
 use POE qw/Component::IRC/;
+use App::ACT::ScheduleBot::EventFormatter;
+
 with 'App::ACT::ScheduleBot::PublisherRole';
 
 has 'poco_irc' => (
@@ -19,17 +21,34 @@ sub _build_poco_irc {
   );
 }
 
+has 'formatter' => (
+  is => 'ro',
+  isa => 'App::ACT::ScheduleBot::EventFormatter',
+  lazy => 1,
+  builder => '_build_formatter',
+  handles => [qw/format_event/],
+);
+
+sub _build_formatter {
+  my ($self) = @_;
+  return App::ACT::ScheduleBot::EventFormatter->new(
+    max_length => 200,
+  );
+}
+
 has 'debug_mode' => ( 
   is => 'rw',
   isa => 'Int',
   default => 0
 );
 
-sub _start { }
-
 sub announce_event {
   my ($self, $kernel, $event) = @_[OBJECT, KERNEL, ARG0];
-  die "Unimplemented";
+  my $formatted = $self->format_event($event);
+  print STDERR "  IRC: $formatted\n";
+  if (!$self->debug_mode) {
+    die "Unimplemented";
+  }
 }
 
 no Moose;

@@ -2,6 +2,8 @@ package App::ACT::ScheduleBot::Publisher::Twitter;
 use Moose;
 use POE;
 use Net::Twitter;
+use App::ACT::ScheduleBot::EventFormatter;
+
 with 'App::ACT::ScheduleBot::PublisherRole';
 
 has 'net_twitter' => (
@@ -22,17 +24,35 @@ sub _build_net_twitter {
   );
 }
 
+has 'formatter' => (
+  is => 'ro',
+  isa => 'App::ACT::ScheduleBot::EventFormatter',
+  lazy => 1,
+  builder => '_build_formatter',
+  handles => [qw/format_event/],
+);
+
+sub _build_formatter {
+  my ($self) = @_;
+  return App::ACT::ScheduleBot::EventFormatter->new(
+    max_length => 140,
+    suffix => $self->config->{Twitter}{Hashtags} || '',
+  );
+}
+
 has 'debug_mode' => ( 
   is => 'rw',
   isa => 'Int',
   default => 0
 );
 
-sub _start { }
-
 sub announce_event {
   my ($self, $kernel, $event) = @_[OBJECT, KERNEL, ARG0];
-  die "Unimplemented";
+  my $formatted = $self->format_event($event);
+  print STDERR "Tweet: $formatted\n";
+  if (!$self->debug_mode) {
+    die "Unimplemented";
+  }
 }
 
 no Moose;
