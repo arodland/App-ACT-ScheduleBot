@@ -42,11 +42,14 @@ sub _build_session {
   return POE::Session->create(
     object_states => [
       $self => [ qw/_start/ ],
-    ]
+    ],
   )
 }
 
-sub _start { }
+sub _start {
+  my ($self, $kernel) = @_[OBJECT, KERNEL];
+  $kernel->alias_set("$self");
+}
 
 has '_publishers' => (
   is => 'ro',
@@ -122,7 +125,7 @@ sub announce_event {
   my ($self, $event) = @_;
 
   for my $publisher ($self->publishers) {
-    $publisher->announce_event($event);
+    $publisher->post('announce_event' => $event);
   }
 }
 

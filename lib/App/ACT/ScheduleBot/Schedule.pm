@@ -9,10 +9,8 @@ use App::ACT::ScheduleBot::Event;
 with 'App::ACT::ScheduleBot::POERole';
 
 sub poe_states {
-  qw/_start get_schedule/
+  qw/get_schedule/
 }
-
-sub _start { }
 
 sub get_schedule {
   my ($self, %args) = @_;

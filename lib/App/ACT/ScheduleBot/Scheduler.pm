@@ -6,7 +6,7 @@ use POE;
 with 'App::ACT::ScheduleBot::POERole';
 
 sub poe_states {
-  qw/_start refresh schedule_events announce/
+  qw/START refresh schedule_events announce/
 }
 
 has 'debug_mode' => (
@@ -32,7 +32,7 @@ has 'last_announcement' => (
   default => sub { time() },
 );
 
-sub _start {
+sub START {
   my ($self, $kernel) = @_[OBJECT, KERNEL];
 
   $kernel->yield('refresh');
@@ -47,8 +47,9 @@ sub refresh {
 }
 
 sub schedule_events {
-  my ($self, $kernel, $schedule) = @_[OBJECT, KERNEL, ARG1];
-
+  my ($self, $kernel, $postback_args) = @_[OBJECT, KERNEL, ARG1];
+  my $schedule = $postback_args->[0];
+ 
   for my $alarm ($self->alarms) {
     $kernel->alarm_remove($alarm);
   }
