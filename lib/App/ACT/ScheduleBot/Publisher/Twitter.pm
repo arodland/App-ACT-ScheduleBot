@@ -46,7 +46,7 @@ sub _build_formatter {
     max_length => 140,
     suffix => $self->config->{Twitter}{Hashtags} || '',
     short_url_length => $self->twitter_conf->{short_url_length},
-    short_url_length_https => $self->twitter_config->{short_url_length_https},
+    short_url_length_https => $self->twitter_conf->{short_url_length_https},
   );
 }
 

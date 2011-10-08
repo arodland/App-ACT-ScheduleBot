@@ -6,7 +6,7 @@ use App::ACT::ScheduleBot::EventFormatter;
 with 'App::ACT::ScheduleBot::PublisherRole';
 
 sub poe_states { 
-  qw/irc_001/ 
+  qw/START irc_001/
 }
 
 has 'poco_irc' => (
@@ -48,8 +48,11 @@ has 'debug_mode' => (
 
 sub START {
   my ($self, $kernel) = @_[OBJECT, KERNEL];
-  $kernel->post(irc => register => '001');
-  $kernel->post(irc => connect => { });
+  unless ($self->debug_mode) {
+    $self->poco_irc;
+    $kernel->post(irc => register => '001');
+    $kernel->post(irc => connect => { });
+  }
 }
 
 sub irc_001 {
