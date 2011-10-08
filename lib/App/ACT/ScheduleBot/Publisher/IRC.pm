@@ -6,7 +6,7 @@ use App::ACT::ScheduleBot::EventFormatter;
 with 'App::ACT::ScheduleBot::PublisherRole';
 
 sub poe_states { 
-  qw/START irc_001/
+  qw/START irc_001 announce_event/
 }
 
 has 'poco_irc' => (
