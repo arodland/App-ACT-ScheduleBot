@@ -66,7 +66,7 @@ sub announce_event {
   my $formatted = $self->format_event($event);
   print STDERR "  IRC: $formatted\n";
   if (!$self->debug_mode) {
-    die "Unimplemented";
+    $kernel->post( irc => notice => $self->config->{IRC}{Channel} => $formatted );
   }
 }
 
