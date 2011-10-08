@@ -44,7 +44,9 @@ sub refresh {
   $self->bot->schedule->get_schedule(
     postback => $session->postback("schedule_events")
   );
-  $kernel->delay( 'refresh' => $self->config->{General}{'Schedule Refresh Interval'} * 60 );
+  unless ($self->debug_mode) {
+    $kernel->delay( 'refresh' => $self->config->{General}{'Schedule Refresh Interval'} * 60 );
+  }
 }
 
 sub schedule_events {
