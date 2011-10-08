@@ -119,6 +119,13 @@ sub test_run {
   POE::Kernel->run;
 }
 
+sub run_to_stdout {
+  my ($self) = @_;
+  $_->debug_mode(1) for $self->publishers;
+  $self->scheduler;
+  POE::Kernel->run;
+}
+
 sub run {
   my ($self) = @_;
   $self->scheduler;
