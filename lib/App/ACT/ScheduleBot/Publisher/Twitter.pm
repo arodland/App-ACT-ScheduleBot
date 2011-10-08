@@ -1,7 +1,7 @@
 package App::ACT::ScheduleBot::Publisher::Twitter;
 use Moose;
 use POE;
-use Net::Twitter;
+use Net::Twitter 3.18001;
 use App::ACT::ScheduleBot::EventFormatter;
 
 with 'App::ACT::ScheduleBot::PublisherRole';
@@ -32,11 +32,21 @@ has 'formatter' => (
   handles => [qw/format_event/],
 );
 
+has 'twitter_conf' => (
+  is => 'ro',
+  isa => 'HashRef',
+  lazy => 1,
+  default => sub { shift->net_twitter->get_configuration },
+);
+
 sub _build_formatter {
   my ($self) = @_;
+
   return App::ACT::ScheduleBot::EventFormatter->new(
     max_length => 140,
     suffix => $self->config->{Twitter}{Hashtags} || '',
+    short_url_length => $self->twitter_conf->{short_url_length},
+    short_url_length_https => $self->twitter_config->{short_url_length_https},
   );
 }
 

@@ -7,10 +7,15 @@ has 'max_length' => (
   required => 1,
 );
 
-has suffix => (
+has 'suffix' => (
   is => 'ro',
   isa => 'Str',
   default => '',
+);
+
+has [ 'short_url_length', 'short_url_length_https' ] => (
+  is => 'ro',
+  isa => 'Int',
 );
 
 sub format_event {
@@ -34,6 +39,15 @@ sub format_event {
   }
 
   my $avail = $self->max_length() - length($leading) - length($trailing);
+
+  if ($url =~ /^http:/ && $self->short_url_length) {
+    $avail += length($url);
+    $avail -= $self->short_url_length;
+  } elsif ($url =~ /^https:/ && $self->short_url_length) {
+    $avail += length($url);
+    $avail -= $self->short_url_length_https;
+  }
+
   my $summary = $event->summary;
 
   if (length $summary > $avail) {
