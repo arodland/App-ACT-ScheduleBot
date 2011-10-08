@@ -5,6 +5,10 @@ use App::ACT::ScheduleBot::EventFormatter;
 
 with 'App::ACT::ScheduleBot::PublisherRole';
 
+sub poe_states { 
+  qw/irc_001/ 
+}
+
 has 'poco_irc' => (
   is => 'ro',
   lazy => 1,
@@ -41,6 +45,18 @@ has 'debug_mode' => (
   isa => 'Int',
   default => 0
 );
+
+sub START {
+  my ($self, $kernel) = @_[OBJECT, KERNEL];
+  $kernel->post(irc => register => '001');
+  $kernel->post(irc => connect => { });
+}
+
+sub irc_001 {
+  my ($self, $kernel) = @_[OBJECT, KERNEL];
+  $kernel->post(irc => join => $self->config->{IRC}{Channel});
+  print STDERR "Connected to IRC\n";
+}
 
 sub announce_event {
   my ($self, $kernel, $event) = @_[OBJECT, KERNEL, ARG0];

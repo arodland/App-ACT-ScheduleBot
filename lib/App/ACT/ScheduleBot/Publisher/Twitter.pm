@@ -61,7 +61,7 @@ sub announce_event {
   my $formatted = $self->format_event($event);
   print STDERR "Tweet: $formatted\n";
   if (!$self->debug_mode) {
-    die "Unimplemented";
+    $self->net_twitter->update($formatted);
   }
 }
 
