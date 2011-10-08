@@ -44,6 +44,7 @@ sub refresh {
   $self->bot->schedule->get_schedule(
     postback => $session->postback("schedule_events")
   );
+  $kernel->delay( 'refresh' => $self->config->{General}{'Schedule Refresh Interval'} * 60 );
 }
 
 sub schedule_events {
@@ -59,7 +60,7 @@ sub schedule_events {
       $kernel->yield(announce => $event);
     } else {
       my $start_time = $event->start->epoch;
-      my $announce_time = $start_time - $self->config->{General}{'Announcement Lead Time'};
+      my $announce_time = $start_time - $self->config->{General}{'Announcement Lead Time'} * 60;
       next if $self->last_announcement > $announce_time;
       my $alarm = $kernel->alarm_set( announce => $announce_time, $event );
     }
