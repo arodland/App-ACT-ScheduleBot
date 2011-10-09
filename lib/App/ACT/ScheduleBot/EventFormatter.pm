@@ -29,7 +29,7 @@ sub format_event {
   $time .= ($dt->hour < 12) ? 'a' : 'p';
 
   my $when_where = $time;
-  $when_where .= ' in ' . $event->location if defined $event->location;
+  $when_where .= ' in ' . $event->location if $event->location =~ /\S/;
 
   my $url = $event->url;
   my $suffix = $self->suffix;
