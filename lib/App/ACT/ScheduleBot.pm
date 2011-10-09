@@ -32,7 +32,7 @@ sub load_config {
       use_ext => 1,
     }
   );
-  return (values $configs->[0])[0];
+  return (values %{$configs->[0]})[0];
 }
 
 has 'session' => (
