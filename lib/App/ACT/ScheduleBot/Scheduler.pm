@@ -41,6 +41,7 @@ sub START {
 sub refresh {
   my ($self, $kernel, $session) = @_[OBJECT, KERNEL, SESSION];
 
+  print STDERR "Fetching schedule...\n";
   $self->bot->schedule->get_schedule(
     postback => $session->postback("schedule_events")
   );
@@ -57,6 +58,8 @@ sub schedule_events {
     $kernel->alarm_remove($alarm);
   }
 
+  my $scheduled = 0;
+
   for my $event (@$schedule) {
     if ($self->debug_mode) {
       $kernel->yield(announce => $event);
@@ -67,6 +70,8 @@ sub schedule_events {
       my $alarm = $kernel->alarm_set( announce => $announce_time, $event );
     }
   }
+
+  print STDERR "Scheduler: scalar(@$schedule), " events, $scheduled in future.\n";
 }
 
 sub announce {
