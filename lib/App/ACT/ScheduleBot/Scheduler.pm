@@ -68,6 +68,7 @@ sub schedule_events {
       my $announce_time = $start_time - $self->config->{General}{'Announcement Lead Time'} * 60;
       next if $self->last_announcement > $announce_time;
       my $alarm = $kernel->alarm_set( announce => $announce_time, $event );
+      $scheduled++;
     }
   }
 
