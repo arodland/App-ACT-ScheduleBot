@@ -51,7 +51,9 @@ sub format_event {
   my $summary = $event->summary;
 
   if (length $summary > $avail) {
-    substr($summary, $avail - 1) = "\x{2026}"; # one-char ellipsis
+    substr($summary, $avail - 1) = "";
+    $summary =~ /\s+$//;
+    $summary .= "\x{2026}"; # one-char ellipsis
   }
 
   return $leading . $summary . $trailing;
