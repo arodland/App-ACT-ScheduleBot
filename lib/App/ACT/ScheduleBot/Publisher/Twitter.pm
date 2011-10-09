@@ -61,7 +61,12 @@ sub announce_event {
   my $formatted = $self->format_event($event);
   print STDERR "Tweet: $formatted\n";
   if (!$self->debug_mode) {
-    $self->net_twitter->update($formatted);
+    eval {
+      $self->net_twitter->update($formatted);
+    };
+    if ($@) {
+      print STDERR "Error tweeting: $@\n";
+    }
   }
 }
 
