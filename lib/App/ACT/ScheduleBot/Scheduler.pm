@@ -72,6 +72,7 @@ sub schedule_events {
 sub announce {
   my ($self, $kernel, $event) = @_[OBJECT, KERNEL, ARG0];
 
+  $self->last_announcement( time() );
   $self->bot->announce_event($event);
 }
 
