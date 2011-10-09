@@ -52,7 +52,7 @@ sub format_event {
 
   if (length $summary > $avail) {
     substr($summary, $avail - 1) = "";
-    $summary =~ /\s+$//;
+    $summary =~ s/\s+$//;
     $summary .= "\x{2026}"; # one-char ellipsis
   }
 
