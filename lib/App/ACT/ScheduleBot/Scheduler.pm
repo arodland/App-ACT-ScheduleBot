@@ -66,8 +66,8 @@ sub schedule_events {
     } else {
       my $start_time = $event->start->epoch;
       my $announce_time = $start_time - $self->config->{General}{'Announcement Lead Time'} * 60;
-      next if $self->last_announcement > $announce_time;
-      my $alarm = $kernel->alarm_set( announce => $announce_time, $event );
+      next if $self->last_announcement >= $announce_time;
+      my $alarm = $kernel->alarm_set( announce => $announce_time, $event, $announce_time );
       $self->add_alarm($alarm);
       $scheduled++;
     }
@@ -77,9 +77,11 @@ sub schedule_events {
 }
 
 sub announce {
-  my ($self, $kernel, $event) = @_[OBJECT, KERNEL, ARG0];
+  my ($self, $kernel, $event, $announce_time) = @_[OBJECT, KERNEL, ARG0, ARG1];
 
-  $self->last_announcement( time() );
+  if ($self->last_announcement < $announce_time) {
+    $self->last_announcement($announce_time);
+  }
   $self->bot->announce_event($event);
 }
 
