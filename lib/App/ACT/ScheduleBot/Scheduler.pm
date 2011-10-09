@@ -71,7 +71,7 @@ sub schedule_events {
     }
   }
 
-  print STDERR "Scheduler: scalar(@$schedule), " events, $scheduled in future.\n";
+  print STDERR "Scheduler: ", scalar(@$schedule), " events, $scheduled in future.\n";
 }
 
 sub announce {
