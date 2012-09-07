@@ -12,6 +12,9 @@ requires(
   'Net::Twitter'              => 0,
   'POE'                       => 0,
   'POE::Component::IRC'       => 0,
+  'Config::Any'               => 0,
+  'Config::Tiny'              => 0,
+  'Data::ICal::DateTime'      => 0,
 );
 
 #install_script 'bin/act_schedulebot.pl';
