@@ -11,6 +11,10 @@ has 'net_twitter' => (
   isa => 'Net::Twitter',
   lazy => 1,
   builder => '_build_net_twitter',
+  handles => [
+    'get_authorization_url',
+    'request_access_token',
+  ],
 );
 
 sub _build_net_twitter {
