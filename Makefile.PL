@@ -15,8 +15,10 @@ requires(
   'Config::Any'               => 0,
   'Config::Tiny'              => 0,
   'Data::ICal::DateTime'      => 0,
+  'Path::Class::File'         => 0,
+  'Storable'                  => 0,
 );
 
-#install_script 'bin/act_schedulebot.pl';
+#install_script 'bin/schedulebot';
 auto_install;
 WriteAll;
