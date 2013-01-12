@@ -1,0 +1,36 @@
+#!/usr/bin/env perl
+use strict;
+use warnings;
+use FindBin;
+use lib "$FindBin::Bin/../lib";
+use Getopt::Long;
+use App::ACT::ScheduleBot;
+use POE;
+
+POE::Kernel->run; # Shut up, you
+
+die "Usage: $0 conference.ini" unless @ARGV == 1;
+
+my $bot = App::ACT::ScheduleBot->new(config_file => $ARGV[0]);
+
+if (!$bot->config->{Twitter}{Enabled}) {
+  die "Can't configure twitter, enable it in the config first";
+}
+
+my ($twitter_publisher) = grep { $_->isa('App::ACT::ScheduleBot::Publisher::Twitter') } $bot->publishers;
+die "Twitter publisher not found" unless $twitter_publisher;
+
+my $url = $twitter_publisher->get_authorization_url;
+print "Authorization URL: $url\n";
+print "Go here and authorize the request, then enter the PIN below.";
+print "PIN: ";
+
+my $pin;
+do {
+  chomp($pin = <STDIN>);
+} until ($pin =~ /^\d+$/);
+
+my ($access_token, $secret, $user_id, $username) = $twitter_publisher->request_access_token(verifier => $pin);
+print "Authorized for account $username\n";
+print "Access Token = $access_token\n";
+print "Access Token Secret = $secret\n";

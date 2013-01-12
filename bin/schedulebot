@@ -1,0 +1,23 @@
+#!/usr/bin/env perl
+use strict;
+use warnings;
+use FindBin;
+use lib "$FindBin::Bin/../lib";
+use Getopt::Long;
+use App::ACT::ScheduleBot;
+
+my $to_stdout;
+
+GetOptions(
+  "stdout" => \$to_stdout,
+);
+
+@ARGV == 1 or die "Usage: $0 [--stdout] conference.ini";
+
+my $bot = App::ACT::ScheduleBot->new(
+  config_file => $ARGV[0],
+);
+
+my $method = $to_stdout ? "run_to_stdout" : "run";
+
+$bot->$method();
