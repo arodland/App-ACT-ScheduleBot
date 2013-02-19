@@ -142,10 +142,10 @@ sub oauth_authorize {
   my $url = $twitter->get_authorization_url;
   print "Authorization URL: $url\n";
   print "Go here and authorize the request, then enter the pin below.\n";
-  print "PIN: ";
   my $pin;
 
   do {
+    print "PIN: ";
     chomp($pin = <STDIN>);
   } until ($pin =~ /^\d+$/);
 
