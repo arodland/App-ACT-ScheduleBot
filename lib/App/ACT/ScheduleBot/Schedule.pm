@@ -27,6 +27,12 @@ sub get_schedule {
     @entries
   ];
 
+  if (defined $self->config->{General}{'Schedule Offset'}) {
+    for my $event (@$schedule) {
+      $event->start->add(minutes => $self->config->{General}{'Schedule Offset'});
+    }
+  }
+
   if (defined $args{postback}) {
     $args{postback}->($schedule);
   } else {
