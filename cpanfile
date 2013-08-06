@@ -1,0 +1,14 @@
+requires 'Moose';
+requires 'Data::ICal';
+requires 'DateTime';
+requires 'DateTime::Format::ISO8601';
+requires 'LWP::Simple';
+requires 'Net::Twitter';
+requires 'POE';
+requires 'POE::Component::IRC';
+requires 'Config::Any';
+requires 'Config::Tiny';
+requires 'Data::ICal::DateTime';
+requires 'Path::Class::File';
+requires 'Storable';
+requires 'LWP::Protocol::https';
