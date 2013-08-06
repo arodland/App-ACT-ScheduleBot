@@ -1,5 +1,7 @@
 package App::ACT::ScheduleBot;
 
+our $VERSION = '0.01';
+
 use Moose;
 use Config::Any;
 

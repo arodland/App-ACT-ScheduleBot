@@ -19,6 +19,6 @@ requires(
   'Storable'                  => 0,
 );
 
-#install_script 'bin/schedulebot';
+install_script 'bin/schedulebot';
 auto_install;
 WriteAll;
