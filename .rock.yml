@@ -1,0 +1,5 @@
+runtime: perl516
+
+run_bot: exec perl bin/schedulebot ${ROCK_ARGV}
+
+configure_twitter: exec perl bin/twitter_auth ${ROCK_ARGV}

@@ -10,7 +10,7 @@ with 'App::ACT::ScheduleBot::PublisherRole';
 
 sub BUILD {
   my ($self) = @_;
-  $self->_build_twitter_credentials;
+  $self->twitter_conf;
 }
 
 has 'net_twitter' => (
@@ -18,10 +18,11 @@ has 'net_twitter' => (
   isa => 'Net::Twitter',
   lazy => 1,
   builder => '_build_net_twitter',
-  handles => [
-    'get_authorization_url',
-    'request_access_token',
-  ],
+  handles => {
+    get_authorization_url => 'get_authorization_url',
+    request_access_token => 'request_access_token',
+    _build_twitter_conf => 'get_configuration',
+  },
 );
 
 sub _build_net_twitter {
@@ -55,8 +56,8 @@ sub _build_formatter {
   return App::ACT::ScheduleBot::EventFormatter->new(
     max_length => 140,
     suffix => $self->config->{Twitter}{Hashtags} || '',
-    short_url_length => $self->twitter_conf->{short_url_length},
-    short_url_length_https => $self->twitter_conf->{short_url_length_https},
+    short_url_length => $self->twitter_conf->{short_url_length} || 22,
+    short_url_length_https => $self->twitter_conf->{short_url_length_https} || 23,
   );
 }
 
@@ -94,11 +95,13 @@ has 'twitter_credential_file' => (
     Path::Class::File->new($self->bot->config_file)->dir->file($filename);
   },
   coerce => 1,
+  lazy => 1,
 );
 
 has 'twitter_credentials' => (
   is => 'rw',
   isa => 'HashRef',
+  lazy => 1,
   builder => '_build_twitter_credentials',
 );
 
@@ -117,7 +120,12 @@ sub _build_twitter_credentials {
 
 sub read_twitter_credentials {
   my ($self, $filename) = @_;
-  return Storable::retrieve($filename);
+  warn "Cred filename: $filename\n";
+  my $creds = Storable::retrieve($filename);
+  use Data::Dumper;
+  warn Dumper($creds);
+
+  return $creds;
 }
 
 sub write_twitter_credentials {
@@ -158,6 +166,12 @@ sub oauth_authorize {
 
   return $creds;
 }
+
+has 'twitter_conf' => (
+  is => 'ro',
+  isa => 'HashRef',
+  builder => '_build_twitter_conf',
+);
 
 no Moose;
 __PACKAGE__->meta->make_immutable;
