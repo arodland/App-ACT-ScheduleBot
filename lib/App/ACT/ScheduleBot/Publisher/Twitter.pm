@@ -37,8 +37,9 @@ sub _twitter_from_credentials {
   my ($self, $creds) = @_;
 
   return Net::Twitter->new(
-    traits => [ qw/OAuth API::REST RetryOnError/ ],
+    traits => [ qw/OAuth API::RESTv1_1 RetryOnError/ ],
     %$creds,
+    ssl => 1,
   );
 }
 
