@@ -105,7 +105,7 @@ sub build_url {
   if ($self->has_ics_entry) {
     return $self->build_strval('url');
   } else {
-    my $title = $self->title;
+    my $title = $self->summary;
     $title = lc $title;
     $title =~ tr/a-z0-9/_/c;
     return "http://www.perlconference.us/tpc-2017-dc/talks/#$title";
