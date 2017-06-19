@@ -12,3 +12,4 @@ requires 'Data::ICal::DateTime';
 requires 'Path::Class::File';
 requires 'Storable';
 requires 'LWP::Protocol::https';
+requires 'Text::xSV';
