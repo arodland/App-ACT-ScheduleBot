@@ -19,7 +19,7 @@ has [ 'short_url_length', 'short_url_length_https' ] => (
 );
 
 sub format_event {
-  my ($self, $event) = @_;
+  my ($self, $event, $for) = @_;
 
   my $speaker = $event->organizer;
   my $leading = defined $speaker ? "$speaker: " : "";
@@ -31,7 +31,12 @@ sub format_event {
   my $when_where = $time;
   $when_where .= ' in ' . $event->location if $event->location =~ /\S/;
 
-  my $url = $event->url;
+  my $url;
+  if ($for eq 'irc') {
+    $url = $event->short_url;
+  } else {
+    $url = $event->url;
+  }
   my $suffix = $self->suffix;
   my $trailing = " $when_where $url";
   if (length $suffix) {
@@ -40,12 +45,14 @@ sub format_event {
 
   my $avail = $self->max_length() - length($leading) - length($trailing);
 
-  if ($url =~ /^http:/ && $self->short_url_length) {
-    $avail += length($url);
-    $avail -= $self->short_url_length;
-  } elsif ($url =~ /^https:/ && $self->short_url_length) {
-    $avail += length($url);
-    $avail -= $self->short_url_length_https;
+  if ($for eq 'twitter') {
+    if ($url =~ /^http:/ && $self->short_url_length) {
+      $avail += length($url);
+      $avail -= $self->short_url_length;
+    } elsif ($url =~ /^https:/ && $self->short_url_length) {
+      $avail += length($url);
+      $avail -= $self->short_url_length_https;
+    }
   }
 
   my $summary = $event->summary;

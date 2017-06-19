@@ -63,7 +63,7 @@ sub irc_001 {
 
 sub announce_event {
   my ($self, $kernel, $event) = @_[OBJECT, KERNEL, ARG0];
-  my $formatted = $self->format_event($event);
+  my $formatted = $self->format_event($event, 'irc');
   print STDERR "  IRC: $formatted\n";
   if (!$self->debug_mode) {
     $kernel->post( irc => notice => $self->config->{IRC}{Channel} => $formatted );

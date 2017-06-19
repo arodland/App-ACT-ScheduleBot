@@ -70,7 +70,7 @@ has 'debug_mode' => (
 
 sub announce_event {
   my ($self, $kernel, $event) = @_[OBJECT, KERNEL, ARG0];
-  my $formatted = $self->format_event($event);
+  my $formatted = $self->format_event($event, 'twitter');
   print STDERR "Tweet: $formatted\n";
   if (!$self->debug_mode) {
     eval {

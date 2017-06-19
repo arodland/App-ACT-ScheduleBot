@@ -2,6 +2,7 @@ package App::ACT::ScheduleBot::Event;
 use Moose;
 use DateTime;
 use DateTime::Format::ISO8601;
+use WWW::Shorten qw(TinyURL :short);
 
 has 'ics_entry' => (
   is => 'ro',
@@ -47,6 +48,12 @@ has 'url' => (
   isa => 'Maybe[Str]',
   lazy => 1,
   default => sub { shift->build_url },
+);
+
+has 'short_url' => (
+  is => 'ro',
+  lazy => 1,
+  default => sub { shift->build_short_url },
 );
 
 sub get_property {
@@ -107,10 +114,16 @@ sub build_url {
   } else {
     my $title = $self->summary;
     $title = lc $title;
-    $title =~ tr/a-z0-9/_/c;
+    $title =~ tr/a-z0-9/_/cs;
     return "http://www.perlconference.us/tpc-2017-dc/talks/#$title";
     return $title;
   }
+}
+
+sub build_short_url {
+  my ($self) = @_;
+
+  return short_link($self->url);
 }
 
 no Moose;
