@@ -60,7 +60,8 @@ sub get_property {
   my ($self, $propname) = @_;
 
   my $prop = $self->ics_entry->property($propname);
-  die "Unknown prop type ", ref($prop) unless  ref($prop) eq 'ARRAY';
+  return unless defined $prop;
+  die "Unknown prop type " . ref($prop) . "for $propname" unless ref($prop) eq 'ARRAY';
   $prop = $prop->[0];
   return $prop;
 }
